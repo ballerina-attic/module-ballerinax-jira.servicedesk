@@ -24,7 +24,8 @@ public type Client client object {
     #
     # + jiraConfig - Jira client configuration record.
     public function __init(JiraConfiguration jiraConfig) {
-        self.jiraClient = new (jiraConfig.baseUrl, config = jiraConfig.clientConfig);
+        string baseUrl = jiraConfig.baseUrl + API_PATH;
+        self.jiraClient = new (baseUrl, config = jiraConfig.clientConfig);
     }
 
     # Retrieves all the service desks in the Jira Service Desk instance.

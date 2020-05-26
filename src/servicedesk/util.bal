@@ -123,6 +123,7 @@ function convertToIssues(json[] jsonPayload) returns Issue[]|error {
     }
     return issues;
 }
+
 function convertToIssue(json jsonPayload) returns Issue {
     json issueId = checkpanic jsonPayload.issueId;
     json issueKey = checkpanic jsonPayload.issueKey;
@@ -141,6 +142,7 @@ function convertToIssue(json jsonPayload) returns Issue {
     };
     return issue;
 }
+
 function createSLAInformationArray(json jsonPayload) returns SLAInformation[]|error {
     SLAInformation[]|error slaInfo = [];
     json|error slaJson = jsonPayload.values;

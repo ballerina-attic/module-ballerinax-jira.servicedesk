@@ -38,3 +38,4 @@ const string PARTICIPANT_PATH = "/participant";
 const string SLA_PATH = "/sla";
 const string COMMENT_PATH = "/comment";
 const string QUEUE_PATH = "/queue";
+const string API_PATH = "/rest/servicedeskapi";

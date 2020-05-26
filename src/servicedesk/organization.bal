@@ -69,7 +69,7 @@ public type Organization client object {
     #
     # + users - List of customers or account IDs, to remove from the organization
     # + return - () if successful or else error
-    public remote function removeUsers((string|User)[] users) returns error? {
+    public remote function removeUsers(string[] users) returns error? {
         json[] values = <json[]>users;
         json request = {
             "accountIds": values
