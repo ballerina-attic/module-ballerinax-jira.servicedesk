@@ -105,7 +105,7 @@ function testGetOrganizationById() {
 function testCreateOrganization() {
     Organization|error result = sdClient->createOrganization(ORG_NAME);
     if (result is Organization) {
-        test:assertEquals(result.getProperties().name, ORG_NAME,
+        test:assertEquals(result.getProperties().name.toString(), ORG_NAME.toString(),
             msg = "failed to create the organization");
     } else {
         test:assertFail(msg = <string>result.detail()["message"]);
@@ -294,7 +294,7 @@ function testGetIssueTypeById() {
     if (result is ServiceDesk) {
         IssueType|error issueType = result->getIssueTypeById(10003);
         if (issueType is IssueType) {
-            test:assertEquals(issueType.id, 10003, msg = "failed to retrieve the issue types");
+            test:assertEquals(issueType.id, "10003", msg = "failed to retrieve the issue types");
         } else {
             test:assertFail(msg = <string>issueType.detail()["message"]);
         }

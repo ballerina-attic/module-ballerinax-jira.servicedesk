@@ -17,6 +17,45 @@
 import ballerina/http;
 import ballerina/lang.'int;
 
+// Validates the http:Response received
+function validateResponse(http:Response response) returns json|error {
+    int statusCode = response.statusCode;
+    json|error jsonPayload = <@untainted>response.getJsonPayload();
+    if (statusCode == http:STATUS_OK || statusCode == http:STATUS_NO_CONTENT || statusCode == http:STATUS_CREATED) {
+        return jsonPayload;
+    }
+    return createError(HTTP_ERROR_CODE, jsonPayload.toString());
+}
+
+// Validates the response code
+function validateResponseCode(http:Response response) returns error? {
+    int statusCode = response.statusCode;
+    if (statusCode == http:STATUS_OK || statusCode == http:STATUS_NO_CONTENT || statusCode == http:STATUS_CREATED) {
+        return;
+    }
+    json|error jsonPayload = <@untainted>response.getJsonPayload();
+    if (jsonPayload is error) {
+        return jsonPayload;
+    } else {
+        return createError(HTTP_ERROR_CODE, jsonPayload.toString());
+    }
+}
+
+// Creates an error
+function createError(string reason, string message) returns error {
+    return error(reason, message = message);
+}
+
+// Creates the path with the given query params
+function getPath(string path, string query, string value) returns string {
+    if (path.indexOf("?", 0) == ()) {
+        return path + QUESTION_MARK + query + EQUAL + value;
+    } else {
+        return path + AMPERSAND + query + EQUAL + value;
+    }
+}
+
+// Creates an array of `Organization`
 function createOrganizationArray(json jsonPayload, http:Client jiraClient) returns Organization[]|error {
     Organization[]|error organizations = [];
     json|error organizationJson = jsonPayload.values;
@@ -28,6 +67,7 @@ function createOrganizationArray(json jsonPayload, http:Client jiraClient) retur
     return organizations;
 }
 
+// Converts a json array to `Organization` objects
 function convertToOrganizations(json[] jsonPayload, http:Client jiraClient) returns Organization[]|error {
     int i = 0;
     Organization[] organizations = [];
@@ -43,6 +83,7 @@ function convertToOrganizations(json[] jsonPayload, http:Client jiraClient) retu
     return organizations;
 }
 
+// Converts a json to a `Organization` object
 function convertToOrganization(json jsonPayload, http:Client jiraClient) returns Organization|error {
     json idVal = checkpanic jsonPayload.id;
     int id = checkpanic 'int:fromString(idVal.toString());
@@ -55,6 +96,7 @@ function convertToOrganization(json jsonPayload, http:Client jiraClient) returns
     return organization;
 }
 
+// Creates an array of `ServiceDesk`
 function createServiceDeskArray(json jsonPayload, http:Client jiraClient) returns ServiceDesk[]|error {
     ServiceDesk[]|error serviceDesks = [];
     json|error serviceDeskJson = jsonPayload.values;
@@ -66,6 +108,7 @@ function createServiceDeskArray(json jsonPayload, http:Client jiraClient) return
     return serviceDesks;
 }
 
+// Converts a json array to `ServiceDesk` objects
 function convertToServiDesks(json[] jsonPayload, http:Client jiraClient) returns ServiceDesk[]|error {
     int i = 0;
     ServiceDesk[] serviceDesks = [];
@@ -81,6 +124,7 @@ function convertToServiDesks(json[] jsonPayload, http:Client jiraClient) returns
     return serviceDesks;
 }
 
+// Converts a json to a `ServiceDesk` object
 function convertToServiceDesk(json jsonPayload, http:Client jiraClient) returns ServiceDesk {
     json idVal = checkpanic jsonPayload.id;
     int id = checkpanic 'int:fromString(idVal.toString());
@@ -98,6 +142,7 @@ function convertToServiceDesk(json jsonPayload, http:Client jiraClient) returns 
     return serviceDesk;
 }
 
+// Creates an array of `Issue`
 function createIssueArray(json jsonPayload) returns Issue[]|error {
     Issue[]|error issues = [];
     json|error issueJson = jsonPayload.values;
@@ -109,6 +154,7 @@ function createIssueArray(json jsonPayload) returns Issue[]|error {
     return issues;
 }
 
+// Converts a json array to `Issue` records
 function convertToIssues(json[] jsonPayload) returns Issue[]|error {
     int i = 0;
     Issue[] issues = [];
@@ -124,8 +170,17 @@ function convertToIssues(json[] jsonPayload) returns Issue[]|error {
     return issues;
 }
 
+// Converts a json to an `Issue` record
 function convertToIssue(json jsonPayload) returns Issue {
+    string summary = "";
     json issueId = checkpanic jsonPayload.issueId;
+    json[] requestFieldValues = <json[]>jsonPayload.requestFieldValues;
+    foreach json fieldJson in requestFieldValues {
+        string fieldName = fieldJson.fieldId.toString();
+        if (fieldName == "summary") {
+            summary = fieldJson.value.toString();
+        }
+    }
     json issueKey = checkpanic jsonPayload.issueKey;
     json requestTypeId = checkpanic jsonPayload.requestTypeId;
     json createdDate = checkpanic jsonPayload.createdDate.friendly;
@@ -134,6 +189,7 @@ function convertToIssue(json jsonPayload) returns Issue {
     IssueType issueType = {id: requestTypeId.toString()};
     Issue issue = {
         id: issueId.toString(),
+        summary: summary,
         key: issueKey.toString(),
         statusId: status.toString(),
         reporterName: reporterName.toString(),
@@ -143,6 +199,7 @@ function convertToIssue(json jsonPayload) returns Issue {
     return issue;
 }
 
+// Creates an array of `SLAInformation`
 function createSLAInformationArray(json jsonPayload) returns SLAInformation[]|error {
     SLAInformation[]|error slaInfo = [];
     json|error slaJson = jsonPayload.values;
@@ -154,6 +211,7 @@ function createSLAInformationArray(json jsonPayload) returns SLAInformation[]|er
     return slaInfo;
 }
 
+// Converts a json array to `SLAInformation` records
 function convertToSLAInformationArray(json[] jsonPayload) returns SLAInformation[]|error {
     int i = 0;
     SLAInformation[] slaInfoArray = [];
@@ -169,6 +227,7 @@ function convertToSLAInformationArray(json[] jsonPayload) returns SLAInformation
     return slaInfoArray;
 }
 
+// Converts a json to a `SLAInformation` record
 function convertToSLAInformation(json jsonPayload) returns SLAInformation {
     json idVal = checkpanic jsonPayload.id;
     int id = checkpanic 'int:fromString(idVal.toString());
@@ -186,6 +245,7 @@ function convertToSLAInformation(json jsonPayload) returns SLAInformation {
     return slaInfo;
 }
 
+// Converts a json array to `SLACycle` records
 function convertToSLACycles(json[] jsonPayload) returns SLACycle[] {
     int i = 0;
     SLACycle[] cycles = [];
@@ -200,6 +260,8 @@ function convertToSLACycles(json[] jsonPayload) returns SLACycle[] {
     }
     return cycles;
 }
+
+// Converts a json to a `SLACycle` record
 function convertToSlACycle(json jsonPayload) returns SLACycle {
     json startTime = checkpanic jsonPayload.startTime.friendly;
     json breachTime = checkpanic jsonPayload.breachTime.friendly;
@@ -222,6 +284,7 @@ function convertToSlACycle(json jsonPayload) returns SLACycle {
     return cycle;
 }
 
+// Creates an array of `User`
 function createUserArray(json jsonPayload) returns User[]|error {
     User[]|error users = [];
     json|error usersJson = jsonPayload.values;
@@ -233,6 +296,7 @@ function createUserArray(json jsonPayload) returns User[]|error {
     return users;
 }
 
+// Converts a json array to `User` records
 function convertToUsers(json[] jsonPayload) returns User[]|error {
     int i = 0;
     User[] users = [];
@@ -247,6 +311,8 @@ function convertToUsers(json[] jsonPayload) returns User[]|error {
     }
     return users;
 }
+
+// Converts a json to a `User` record
 function convertToUser(json jsonPayload) returns User {
     json accountId = checkpanic jsonPayload.accountId;
     json emailAddress = checkpanic jsonPayload.emailAddress;
@@ -263,17 +329,19 @@ function convertToUser(json jsonPayload) returns User {
     return user;
 }
 
+// Creates an array of `Comment`
 function createCommentArray(json jsonPayload) returns Comment[]|error {
     Comment[]|error comments = [];
     json|error commentsJson = jsonPayload.values;
     if (commentsJson is error) {
-        return createError(CONVERSION_ERROR_CODE, "could not retrieve the users");
+        return createError(CONVERSION_ERROR_CODE, "could not retrieve the comments");
     } else {
         comments = convertToComments(<json[]>jsonPayload.values);
     }
     return comments;
 }
 
+// Converts a json array to `Comment` records
 function convertToComments(json[] jsonPayload) returns Comment[]|error {
     int i = 0;
     Comment[] comments = [];
@@ -289,6 +357,7 @@ function convertToComments(json[] jsonPayload) returns Comment[]|error {
     return comments;
 }
 
+// Converts a json to a `Comment` record
 function convertToComment(json jsonPayload) returns Comment {
     json id = checkpanic jsonPayload.id;
     json name = checkpanic jsonPayload.author.displayName;
@@ -305,28 +374,7 @@ function convertToComment(json jsonPayload) returns Comment {
     return comment;
 }
 
-function validateResponse(http:Response response) returns json|error {
-    int statusCode = response.statusCode;
-    json|error jsonPayload = <@untainted>response.getJsonPayload();
-    if (statusCode == http:STATUS_OK || statusCode == http:STATUS_NO_CONTENT || statusCode == http:STATUS_CREATED) {
-        return jsonPayload;
-    }
-    return createError(HTTP_ERROR_CODE, jsonPayload.toString());
-}
-
-function validateResponseCode(http:Response response) returns error? {
-    int statusCode = response.statusCode;
-    if (statusCode == http:STATUS_OK || statusCode == http:STATUS_NO_CONTENT || statusCode == http:STATUS_CREATED) {
-        return;
-    }
-    json|error jsonPayload = <@untainted>response.getJsonPayload();
-    if (jsonPayload is error) {
-        return jsonPayload;
-    } else {
-        return createError(HTTP_ERROR_CODE, jsonPayload.toString());
-    }
-}
-
+// Creates an array of `Queue`
 function createQueueArray(json jsonPayload, boolean includeCount) returns Queue[]|error {
     Queue[]|error queues = [];
     json|error queueJson = jsonPayload.values;
@@ -338,6 +386,7 @@ function createQueueArray(json jsonPayload, boolean includeCount) returns Queue[
     return queues;
 }
 
+// Converts a json array to `Queue` records
 function convertToQueues(json[] jsonPayload, boolean includeCount) returns Queue[]|error {
     int i = 0;
     Queue[] queues = [];
@@ -353,6 +402,7 @@ function convertToQueues(json[] jsonPayload, boolean includeCount) returns Queue
     return queues;
 }
 
+// Converts a json to a `Queue` record
 function convertToQueue(json jsonPayload, boolean includeCount) returns Queue {
     int issueCount = 0;
     json idVal = checkpanic jsonPayload.id;
@@ -370,17 +420,19 @@ function convertToQueue(json jsonPayload, boolean includeCount) returns Queue {
     return queue;
 }
 
+// Creates an array of `IssueType`
 function createIssueTypeArray(json jsonPayload) returns IssueType[]|error {
     IssueType[]|error types = [];
     json|error typesJson = jsonPayload.values;
     if (typesJson is error) {
-        return createError(CONVERSION_ERROR_CODE, "could not retrieve the queues");
+        return createError(CONVERSION_ERROR_CODE, "could not retrieve the issue types");
     } else {
         types = convertToIssueTypes(<json[]>jsonPayload.values);
     }
     return types;
 }
 
+// Converts a json array to `IssueType` records
 function convertToIssueTypes(json[] jsonPayload) returns IssueType[]|error {
     int i = 0;
     IssueType[] issueTypes = [];
@@ -396,6 +448,7 @@ function convertToIssueTypes(json[] jsonPayload) returns IssueType[]|error {
     return issueTypes;
 }
 
+// Converts a json to a `IssueType` record
 function convertToIssueType(json jsonPayload) returns IssueType {
     json id = checkpanic jsonPayload.id;
     json name = checkpanic jsonPayload.name;
@@ -408,16 +461,4 @@ function convertToIssueType(json jsonPayload) returns IssueType {
         avatarId: avatarId.toString()
     };
     return issueType;
-}
-
-function createError(string reason, string message) returns error {
-    return error(reason, message = message);
-}
-
-function getPath(string path, string query, string value) returns string {
-    if (path.indexOf("?", 0) == ()) {
-        return path + QUESTION_MARK + query + EQUAL + value;
-    } else {
-        return path + AMPERSAND + query + EQUAL + value;
-    }
 }

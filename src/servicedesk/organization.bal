@@ -19,8 +19,8 @@ import ballerina/http;
 # Handles functions related to a specific organization
 public type Organization client object {
 
-    http:Client jiraClient;
-    OrganizationProperties properties;
+    private http:Client jiraClient;
+    private OrganizationProperties properties;
 
     # Initializes the `Organization` client object.
     #

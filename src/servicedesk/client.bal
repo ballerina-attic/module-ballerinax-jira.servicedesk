@@ -172,7 +172,8 @@ public type Client client object {
     # + organizationId - The ID of the organization to be deleted
     # + return - () if successful or else error
     public remote function deleteOrganization(int organizationId) returns error? {
-        http:Response|error response = self.jiraClient->delete(ORGANIZATION_PATH + PATH_SEPARATOR + organizationId.toString());
+        http:Response|error response = self.jiraClient->delete(ORGANIZATION_PATH + PATH_SEPARATOR
+            + organizationId.toString());
         if (response is http:Response) {
             return validateResponseCode(response);
         } else {

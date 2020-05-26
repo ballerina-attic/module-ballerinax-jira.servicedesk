@@ -143,9 +143,9 @@ public type ServiceDesk client object {
     # + return - The specific `Queue` of the service desk
     public remote function getQueueById(int queueId, boolean includeCount = false)
     returns Queue|error {
-        http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
-            + self.properties.id.toString() + PATH_SEPARATOR + QUEUE_PATH + queueId.toString()
-            + INCLUDE_COUNT + includeCount.toString());
+        string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + QUEUE_PATH
+            + PATH_SEPARATOR + queueId.toString() + INCLUDE_COUNT + includeCount.toString();
+        http:Response|error response = self.jiraClient->get(path);
         if (response is error) {
             return response;
         } else {
@@ -166,8 +166,9 @@ public type ServiceDesk client object {
     # + queueId - The ID of the queue whose customer issues will be returned
     # + return - Returns the customer issues belonging to the queue or else error
     public remote function getIssuesInQueue(int queueId) returns Issue[]|error {
-        http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
-            + self.properties.id.toString() + PATH_SEPARATOR + QUEUE_PATH + queueId.toString() + ISSUE_PATH);
+        string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + QUEUE_PATH + PATH_SEPARATOR
+            + queueId.toString() + ISSUE_PATH;
+        http:Response|error response = self.jiraClient->get(path);
         if (response is error) {
             return response;
         } else {
@@ -328,7 +329,7 @@ public type ServiceDesk client object {
     # + participants - List of customers to participate in the issue, as a list of accountId
     #                  values
     # + onBehalfOf - The accountId of the customer that the issue is being raised on behalf of
-    # + return - () if successful or else error
+    # + return - The `Issue` created if successful or else error
     public remote function createIssue(Issue issue, string description,
         string[] participants, public string onBehalfOf = "") returns Issue|error {
         json[] values = <json[]>participants;
@@ -339,9 +340,14 @@ public type ServiceDesk client object {
                 "summary": issue.summary,
                 "description": description
             },
-            "requestParticipants": values,
-            "raiseOnBehalfOf": onBehalfOf
+            "requestParticipants": values
         };
+        if (onBehalfOf != "") {
+            json onBehalf = {
+                "raiseOnBehalfOf": onBehalfOf
+            };
+            request = checkpanic request.mergeJson(onBehalf);
+        }
         http:Response|error response = self.jiraClient->post(REQUEST_PATH, request);
         if (response is error) {
             return response;
