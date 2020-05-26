@@ -17,19 +17,25 @@
 import ballerina/auth;
 import ballerina/config;
 import ballerina/http;
+import ballerina/system;
 import ballerina/test;
 
-string USERNAME = config:getAsString("USERNAME");
-string PASSWORD = config:getAsString("PASSWORD");
-string BASE_URL = config:getAsString("BASE_URL");
-string ISSUE_KEY = config:getAsString("ISSUE_KEY");
+string USERNAME = system:getEnv("JIRA_USERNAME") == "" ? config:getAsString("USERNAME") :
+    system:getEnv("JIRA_USERNAME");
+string PASSWORD = system:getEnv("JIRA_PASS") == "" ? config:getAsString("PASSWORD") :
+    system:getEnv("JIRA_PASS");
+string BASE_URL = system:getEnv("JIRA_URL") == "" ? config:getAsString("BASE_URL") :
+    system:getEnv("JIRA_URL");
+string ISSUE_KEY = system:getEnv("ISSUE_KEY") == "" ? config:getAsString("ISSUE_KEY") :
+    system:getEnv("ISSUE_KEY");
+string USER_ID = system:getEnv("USER_ID") == "" ? config:getAsString("USER_ID") :
+    system:getEnv("USER_ID");
 string ORG_NAME = "Test Organization";
 string ORG_NAME_SD = "Service Desk Organization";
 string DELETE_ORG_NAME = "Test Delete Organization";
 string CUSTOMER_NAME = "John H. Smith";
 string CUSTOMER_EMAIL = "jonsmith@hotmail.com";
 string CUSTOMER_ID = "";
-string USER_ID = config:getAsString("USER_ID");
 
 auth:OutboundBasicAuthProvider outboundBasicAuthProvider = new ({
     username: USERNAME,
