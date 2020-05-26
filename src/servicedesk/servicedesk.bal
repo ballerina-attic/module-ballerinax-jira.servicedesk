@@ -51,9 +51,8 @@ public type ServiceDesk client object {
     public remote function getCustomers(string searchQuery = "") returns User[]|error {
         http:Request request = new;
         request.setHeader("X-ExperimentalApi", "opt-in");
-        string path = searchQuery == "" ?
-            SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + CUSTOMER_PATH :
-            SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + CUSTOMER_PATH + QUERY + searchQuery;
+        string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + CUSTOMER_PATH;
+        path = searchQuery != "" ? path + QUEUE_PATH + searchQuery : path;
         http:Response|error response = self.jiraClient->get(path, request);
         if (response is error) {
             return response;
