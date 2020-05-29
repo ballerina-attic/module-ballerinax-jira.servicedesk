@@ -175,7 +175,7 @@ public type ServiceDesk client object {
             if (result is error) {
                 return result;
             } else {
-                return createIssueArray(result);
+                return createIssuesInQueueArray(result);
             }
         }
     }

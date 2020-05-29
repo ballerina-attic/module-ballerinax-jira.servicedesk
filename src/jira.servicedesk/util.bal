@@ -198,6 +198,55 @@ function convertToIssue(json jsonPayload) returns Issue {
     };
     return issue;
 }
+// Creates an array of `Issue`
+function createIssuesInQueueArray(json jsonPayload) returns Issue[]|error {
+    Issue[]|error issues = [];
+    json|error issueJson = jsonPayload.values;
+    if (issueJson is error) {
+        return createError(CONVERSION_ERROR_CODE, "could not retrieve the issues");
+    } else {
+        issues = convertToIssuesInQueue(<json[]>jsonPayload.values);
+    }
+    return issues;
+}
+
+// Converts a json array to `Issue` records
+function convertToIssuesInQueue(json[] jsonPayload) returns Issue[]|error {
+    int i = 0;
+    Issue[] issues = [];
+    foreach json jsonIssue in jsonPayload {
+        Issue|error issue = convertToIssueInQueue(jsonIssue);
+        if (issue is Issue) {
+            issues[i] = issue;
+            i = i + 1;
+        } else {
+            return issue;
+        }
+    }
+    return issues;
+}
+
+// Converts a json to an `Issue` record
+function convertToIssueInQueue(json jsonPayload) returns Issue {
+    json issueId = checkpanic jsonPayload.id;
+    json issueKey = checkpanic jsonPayload.key;
+    json summary = checkpanic jsonPayload.fields.summary;
+    json requestTypeId = checkpanic jsonPayload.fields.issuetype.id;
+    json createdDate = checkpanic jsonPayload.fields.created;
+    json reporterName = checkpanic jsonPayload.fields.reporter.displayName;
+    json status = checkpanic jsonPayload.fields.status.name;
+    IssueType issueType = {id: requestTypeId.toString()};
+    Issue issue = {
+        id: issueId.toString(),
+        summary: summary.toString(),
+        key: issueKey.toString(),
+        statusId: status.toString(),
+        reporterName: reporterName.toString(),
+        createdDate: createdDate.toString(),
+        issueType: issueType
+    };
+    return issue;
+}
 
 // Creates an array of `SlaInformation`
 function createSlaInformationArray(json jsonPayload) returns SlaInformation[]|error {
