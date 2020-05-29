@@ -20,24 +20,25 @@ import ballerina/test;
 
 string USERNAME = system:getEnv("JIRA_USERNAME") == "" ? config:getAsString("USERNAME") :
     system:getEnv("JIRA_USERNAME");
-string PASSWORD = system:getEnv("JIRA_PASS") == "" ? config:getAsString("PASSWORD") :
-    system:getEnv("JIRA_PASS");
+string API_TOKEN = system:getEnv("JIRA_API_TOKEN") == "" ? config:getAsString("JIRA_API_TOKEN") :
+    system:getEnv("JIRA_API_TOKEN");
 string BASE_URL = system:getEnv("JIRA_URL") == "" ? config:getAsString("BASE_URL") :
     system:getEnv("JIRA_URL");
 string ISSUE_KEY = system:getEnv("ISSUE_KEY") == "" ? config:getAsString("ISSUE_KEY") :
     system:getEnv("ISSUE_KEY");
 string USER_ID = system:getEnv("USER_ID") == "" ? config:getAsString("USER_ID") :
     system:getEnv("USER_ID");
+string CUSTOMER_EMAIL = system:getEnv("CUSTOMER_EMAIL") == "" ? config:getAsString("CUSTOMER_EMAIL") :
+                                system:getEnv("CUSTOMER_EMAIL");
 string ORG_NAME = "Test Organization";
 string ORG_NAME_SD = "Service Desk Organization";
 string DELETE_ORG_NAME = "Test Delete Organization";
 string CUSTOMER_NAME = "John H. Smith";
-string CUSTOMER_EMAIL = "jonsmith@hotmail.com";
 string CUSTOMER_ID = "";
 
 BasicAuthConfiguration basicAuth = {
     username: USERNAME,
-    apiToken: PASSWORD
+    apiToken: API_TOKEN
 };
 
 Configuration jiraConfig = {

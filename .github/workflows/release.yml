@@ -15,9 +15,10 @@ jobs:
                     env:
                         JIRA_URL: ${{ secrets.JIRA_URL }}
                         JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
-                        JIRA_PASS: ${{ secrets.JIRA_PASS }}
+                        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
                         ISSUE_KEY: ${{ secrets.ISSUE_KEY }}
                         USER_ID: ${{ secrets.USER_ID }}
+                        CUSTOMER_EMAIL: ${{ secrets.CUSTOMER_EMAIL }}
             -   name: Ballerina Push
                 uses: ballerina-platform/ballerina-action/@master
                 with:
