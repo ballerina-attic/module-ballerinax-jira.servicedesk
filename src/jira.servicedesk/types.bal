@@ -20,7 +20,8 @@ public type User commons:User;
 public type Issue commons:Issue;
 public type Comment commons:Comment;
 public type IssueType commons:IssueType;
-public type JiraConfiguration commons:JiraConfiguration;
+public type Configuration commons:Configuration;
+public type BasicAuthConfiguration commons:BasicAuthConfiguration;
 
 # Properties of a service desk instance.
 # // todo: cHANGE THIS TO PROJECT
@@ -41,11 +42,11 @@ public type ServiceDeskProperties record {|
 # + name - Name of the SLA value
 # + completedCycles - Each SLA value can have zero or more "completed cycles"
 # + ongoingCycle - Each SLA value can have zero or one "ongoing cycles"
-public type SLAInformation record {
+public type SlaInformation record {
     int id;
     string name;
-    SLACycle[]? completedCycles;
-    SLACycle? ongoingCycle;
+    SlaCycle[]? completedCycles;
+    SlaCycle? ongoingCycle;
 };
 
 # Properties of a SLA cycle in a SLA record.
@@ -56,7 +57,7 @@ public type SLAInformation record {
 # + elapsedTimeInMillis - Elapsed time of cycle in milliseconds
 # + remainingTimeInMillis - Remaining time of cycle in milliseconds
 # + breached - Whether the cycle breached the SLA goal
-public type SLACycle record {|
+public type SlaCycle record {|
     string startTime;
     string breachTime;
     int goalDurationInMillis;

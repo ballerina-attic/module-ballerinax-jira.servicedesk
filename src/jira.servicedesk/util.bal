@@ -199,25 +199,25 @@ function convertToIssue(json jsonPayload) returns Issue {
     return issue;
 }
 
-// Creates an array of `SLAInformation`
-function createSLAInformationArray(json jsonPayload) returns SLAInformation[]|error {
-    SLAInformation[]|error slaInfo = [];
+// Creates an array of `SlaInformation`
+function createSlaInformationArray(json jsonPayload) returns SlaInformation[]|error {
+    SlaInformation[]|error slaInfo = [];
     json|error slaJson = jsonPayload.values;
     if (slaJson is error) {
         return createError(CONVERSION_ERROR_CODE, "could not retrieve the sla information");
     } else {
-        slaInfo = convertToSLAInformationArray(<json[]>jsonPayload.values);
+        slaInfo = convertToSlaInformationArray(<json[]>jsonPayload.values);
     }
     return slaInfo;
 }
 
-// Converts a json array to `SLAInformation` records
-function convertToSLAInformationArray(json[] jsonPayload) returns SLAInformation[]|error {
+// Converts a json array to `SlaInformation` records
+function convertToSlaInformationArray(json[] jsonPayload) returns SlaInformation[]|error {
     int i = 0;
-    SLAInformation[] slaInfoArray = [];
+    SlaInformation[] slaInfoArray = [];
     foreach json slaJson in jsonPayload {
-        SLAInformation|error sla = convertToSLAInformation(slaJson);
-        if (sla is SLAInformation) {
+        SlaInformation|error sla = convertToSlaInformation(slaJson);
+        if (sla is SlaInformation) {
             slaInfoArray[i] = sla;
             i = i + 1;
         } else {
@@ -227,16 +227,16 @@ function convertToSLAInformationArray(json[] jsonPayload) returns SLAInformation
     return slaInfoArray;
 }
 
-// Converts a json to a `SLAInformation` record
-function convertToSLAInformation(json jsonPayload) returns SLAInformation {
+// Converts a json to a `SlaInformation` record
+function convertToSlaInformation(json jsonPayload) returns SlaInformation {
     json idVal = checkpanic jsonPayload.id;
     int id = checkpanic 'int:fromString(idVal.toString());
     json name = checkpanic jsonPayload.name;
     json completedCyclesJson = checkpanic jsonPayload.completedCycles;
     json ongoingCycleJson = checkpanic jsonPayload.ongoingCycle;
-    SLACycle[] completeCycles = convertToSLACycles(<json[]>completedCyclesJson);
-    SLACycle ongoingCycle = convertToSlACycle(ongoingCycleJson);
-    SLAInformation slaInfo = {
+    SlaCycle[] completeCycles = convertToSlaCycles(<json[]>completedCyclesJson);
+    SlaCycle ongoingCycle = convertToSlACycle(ongoingCycleJson);
+    SlaInformation slaInfo = {
         id: id,
         name: name.toString(),
         completedCycles: completeCycles,
@@ -245,13 +245,13 @@ function convertToSLAInformation(json jsonPayload) returns SLAInformation {
     return slaInfo;
 }
 
-// Converts a json array to `SLACycle` records
-function convertToSLACycles(json[] jsonPayload) returns SLACycle[] {
+// Converts a json array to `SlaCycle` records
+function convertToSlaCycles(json[] jsonPayload) returns SlaCycle[] {
     int i = 0;
-    SLACycle[] cycles = [];
+    SlaCycle[] cycles = [];
     foreach json jsonCycle in jsonPayload {
-        SLACycle|error cycle = convertToSlACycle(jsonCycle);
-        if (cycle is SLACycle) {
+        SlaCycle|error cycle = convertToSlACycle(jsonCycle);
+        if (cycle is SlaCycle) {
             cycles[i] = cycle;
             i = i + 1;
         } else {
@@ -261,8 +261,8 @@ function convertToSLACycles(json[] jsonPayload) returns SLACycle[] {
     return cycles;
 }
 
-// Converts a json to a `SLACycle` record
-function convertToSlACycle(json jsonPayload) returns SLACycle {
+// Converts a json to a `SlaCycle` record
+function convertToSlACycle(json jsonPayload) returns SlaCycle {
     json startTime = checkpanic jsonPayload.startTime.friendly;
     json breachTime = checkpanic jsonPayload.breachTime.friendly;
     json breachedVal = checkpanic jsonPayload.breached;
@@ -273,7 +273,7 @@ function convertToSlACycle(json jsonPayload) returns SLACycle {
     json remainingTime = checkpanic jsonPayload.remainingTime.millis;
     int remainingTimeInMillis = checkpanic 'int:fromString(remainingTime.toString());
     boolean breached = breachedVal.toString() == "true" ? true : false;
-    SLACycle cycle = {
+    SlaCycle cycle = {
         startTime: startTime.toString(),
         breachTime: breachTime.toString(),
         goalDurationInMillis: goalDurationInMillis,

@@ -14,9 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/auth;
 import ballerina/config;
-import ballerina/http;
 import ballerina/system;
 import ballerina/test;
 
@@ -37,19 +35,14 @@ string CUSTOMER_NAME = "John H. Smith";
 string CUSTOMER_EMAIL = "jonsmith@hotmail.com";
 string CUSTOMER_ID = "";
 
-auth:OutboundBasicAuthProvider outboundBasicAuthProvider = new ({
+BasicAuthConfiguration basicAuth = {
     username: USERNAME,
-    password: PASSWORD
-});
+    apiToken: PASSWORD
+};
 
-http:BasicAuthHandler outboundBasicAuthHandler = new (outboundBasicAuthProvider);
-JiraConfiguration jiraConfig = {
+Configuration jiraConfig = {
     baseUrl: BASE_URL,
-    clientConfig: {
-        auth: {
-            authHandler: outboundBasicAuthHandler
-        }
-    }
+    authConfig: basicAuth
 };
 
 Client sdClient = new (jiraConfig);
@@ -79,9 +72,12 @@ function testGetServiceDeskById() {
 function testCreateCustomer() {
     User|error result = sdClient->createCustomer(CUSTOMER_EMAIL, CUSTOMER_NAME);
     if (result is User) {
-        CUSTOMER_ID = result.accountId;
-        test:assertEquals(result.displayName, CUSTOMER_NAME, msg = "error occurred in customer creation");
-        test:assertEquals(result.emailAddress, CUSTOMER_EMAIL, msg = "error occurred in customer creation");
+        string? id = result?.accountId;
+        if (id is string) {
+            CUSTOMER_ID = id;
+        }
+        test:assertEquals(result?.displayName, CUSTOMER_NAME, msg = "error occurred in customer creation");
+        test:assertEquals(result?.emailAddress, CUSTOMER_EMAIL, msg = "error occurred in customer creation");
     } else {
         test:assertFail(msg = <string>result.detail()["message"]);
     }
@@ -122,7 +118,7 @@ function testCreateOrganization() {
 function testGetIssueById() {
     Issue|error issue = sdClient->getIssueById(ISSUE_KEY);
     if (issue is Issue) {
-        test:assertEquals(issue.key, ISSUE_KEY, msg = "failed to retrieve the issue");
+        test:assertEquals(issue?.key, ISSUE_KEY, msg = "failed to retrieve the issue");
     } else {
         test:assertFail(msg = <string>issue.detail()["message"]);
     }
@@ -162,8 +158,8 @@ function testGetParticipants() {
 
 @test:Config {}
 function testGetSLAInformation() {
-    SLAInformation[]|error result = sdClient->getSLAInFormation(ISSUE_KEY);
-    if (result is SLAInformation[]) {
+    SlaInformation[]|error result = sdClient->getSlaInformation(ISSUE_KEY);
+    if (result is SlaInformation[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the sla information");
     } else {
         test:assertFail(msg = <string>result.detail()["message"]);
@@ -174,7 +170,7 @@ function testGetSLAInformation() {
 function testCreateComment() {
     Comment|error result = sdClient->createComment(ISSUE_KEY, "Still working on it");
     if (result is Comment) {
-        test:assertEquals(result.body, "Still working on it", msg = "failed to create the comment");
+        test:assertEquals(result?.body, "Still working on it", msg = "failed to create the comment");
     } else {
         test:assertFail(msg = <string>result.detail()["message"]);
     }
@@ -300,7 +296,7 @@ function testGetIssueTypeById() {
     if (result is ServiceDesk) {
         IssueType|error issueType = result->getIssueTypeById(10003);
         if (issueType is IssueType) {
-            test:assertEquals(issueType.id, "10003", msg = "failed to retrieve the issue types");
+            test:assertEquals(issueType?.id, "10003", msg = "failed to retrieve the issue types");
         } else {
             test:assertFail(msg = <string>issueType.detail()["message"]);
         }
@@ -377,7 +373,7 @@ function testCreateIssue() {
     if (result is ServiceDesk) {
         Issue|error issueCreated = result->createIssue(issue, "I need a new *mouse* for my Mac", [USER_ID]);
         if (issueCreated is Issue) {
-            test:assertEquals(issueCreated.summary, issue?.summary, msg = "error in creating the issue");
+            test:assertEquals(issueCreated?.summary, issue?.summary, msg = "error in creating the issue");
         } else {
             test:assertFail(msg = <string>issueCreated.detail()["message"]);
         }

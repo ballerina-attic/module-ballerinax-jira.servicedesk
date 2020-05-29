@@ -14,7 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/auth;
 import ballerina/http;
+import ballerina/oauth2;
 
 # Handles global functions related to the `Jira Service Desk` instance.
 public type Client client object {
@@ -23,9 +25,31 @@ public type Client client object {
     # Initializes the Jira client endpoint.
     #
     # + jiraConfig - Jira client configuration record.
-    public function __init(JiraConfiguration jiraConfig) {
+    public function __init(Configuration jiraConfig) {
         string baseUrl = jiraConfig.baseUrl + API_PATH;
-        self.jiraClient = new (baseUrl, config = jiraConfig.clientConfig);
+        http:ClientConfiguration clientConfig;
+        BasicAuthConfiguration|oauth2:DirectTokenConfig authConfig = jiraConfig.authConfig;
+        if (authConfig is BasicAuthConfiguration) {
+            auth:OutboundBasicAuthProvider outboundBasicAuthProvider = new ({
+                username: authConfig.username,
+                password: authConfig.apiToken
+            });
+            http:BasicAuthHandler outboundBasicAuthHandler = new (outboundBasicAuthProvider);
+            clientConfig = {
+                auth: {
+                    authHandler: outboundBasicAuthHandler
+                }
+            };
+        } else {
+            oauth2:OutboundOAuth2Provider oauth2Provider = new (authConfig);
+            http:BearerAuthHandler bearerHandler = new (oauth2Provider);
+            clientConfig = {
+                auth: {
+                    authHandler: bearerHandler
+                }
+            };
+        }
+        self.jiraClient = new (baseUrl, config = clientConfig);
     }
 
     # Retrieves all the service desks in the Jira Service Desk instance.
@@ -264,13 +288,13 @@ public type Client client object {
 
     # Retrieves all the SLA records on a customer issue.
     # ```ballerina
-    # SLAInformation[]|error sla = serviceDeskClient->getSLAInFormation("SD-1");
+    # SLAInformation[]|error sla = serviceDeskClient->getSlaInformation("SD-1");
     # ```
     #
     # + issueIdOrKey - The ID or key of the customer issue to get SLA information
     # + return - SLA information if successful or else error
-    public remote function getSLAInFormation(int|string issueIdOrKey)
-    returns SLAInformation[]|error {
+    public remote function getSlaInformation(int|string issueIdOrKey)
+    returns SlaInformation[]|error {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
         http:Response|error response = self.jiraClient->get(REQUEST_PATH + PATH_SEPARATOR + id + SLA_PATH);
         if (response is error) {
@@ -280,7 +304,7 @@ public type Client client object {
             if (result is error) {
                 return result;
             } else {
-                return createSLAInformationArray(result);
+                return createSlaInformationArray(result);
             }
         }
     }

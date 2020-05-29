@@ -334,9 +334,9 @@ public type ServiceDesk client object {
         json[] values = <json[]>participants;
         json request = {
             "serviceDeskId": self.properties.id,
-            "requestTypeId": issue.issueType.id,
+            "requestTypeId": issue?.issueType?.id,
             "requestFieldValues": {
-                "summary": issue.summary,
+                "summary": issue?.summary,
                 "description": description
             },
             "requestParticipants": values
