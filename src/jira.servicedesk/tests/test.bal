@@ -218,18 +218,20 @@ function testAddCustomers() {
     }
 }
 
-@test:Config {
-    dependsOn: ["testAddCustomers"]
-}
-function testRemoveCustomers() {
-    ServiceDesk|error result = sdClient->getServiceDeskById(1);
-    if (result is ServiceDesk) {
-        error? addResult = result->removeCustomers([CUSTOMER_ID]);
-        test:assertEquals(addResult, (), msg = "failed to remove customers");
-    } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
-    }
-}
+// Need a non-public service desk instance with open access disabled.
+// Else will give the error: "Customers cannot be removed from this service desk because it has open access enabled"
+//@test:Config {
+//    dependsOn: ["testAddCustomers"]
+//}
+//function testRemoveCustomers() {
+//    ServiceDesk|error result = sdClient->getServiceDeskById(1);
+//    if (result is ServiceDesk) {
+//        error? addResult = result->removeCustomers([CUSTOMER_ID]);
+//        test:assertEquals(addResult, (), msg = "failed to remove customers");
+//    } else {
+//        test:assertFail(msg = <string>result.detail()["message"]);
+//    }
+//}
 
 @test:Config {}
 function testGetQueues() {
