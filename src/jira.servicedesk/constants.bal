@@ -14,12 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Error code
+// Error codes
 const string SERVICEDESK_ERROR_CODE = "(ballerinax/jira.servicedesk)ServiceDeskError";
 const string CONVERSION_ERROR_CODE = "(ballerinax/jira.servicedesk)ConversionError";
 const string HTTP_ERROR_CODE = "(ballerinax/jira.servicedesk)HTTPError";
 
-// API URLs
+// API URLs.
 const string PATH_SEPARATOR = "/";
 const string QUESTION_MARK = "?";
 const string EQUAL = "=";

@@ -18,23 +18,23 @@ import ballerina/auth;
 import ballerina/http;
 import ballerina/oauth2;
 
-# Handles global functions related to the `Jira Service Desk` instance.
+# Handles the global functions related to the `Jira Service Desk` instance.
 public type Client client object {
     http:Client jiraClient;
 
     # Initializes the Jira client endpoint.
     #
-    # + jiraConfig - Jira client configuration record.
+    # + jiraConfig - Jira client configuration record
     public function __init(Configuration jiraConfig) {
         string baseUrl = jiraConfig.baseUrl + API_PATH;
         http:ClientConfiguration clientConfig;
         BasicAuthConfiguration|oauth2:DirectTokenConfig authConfig = jiraConfig.authConfig;
         if (authConfig is BasicAuthConfiguration) {
-            auth:OutboundBasicAuthProvider outboundBasicAuthProvider = new ({
+            auth:OutboundBasicAuthProvider basicAuthProvider = new ({
                 username: authConfig.username,
                 password: authConfig.apiToken
             });
-            http:BasicAuthHandler outboundBasicAuthHandler = new (outboundBasicAuthProvider);
+            http:BasicAuthHandler outboundBasicAuthHandler = new (basicAuthProvider);
             clientConfig = {
                 auth: {
                     authHandler: outboundBasicAuthHandler
@@ -57,7 +57,7 @@ public type Client client object {
     # ServiceDesk[]|error serviceDesks = serviceDeskClient->getServiceDesks();
     # ```
     #
-    # + return - An array of `ServiceDesk` instances if successful or else error
+    # + return - An array of `ServiceDesk` instances if successful or else an error
     public remote function getServiceDesks() returns ServiceDesk[]|error {
         http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH);
         if (response is error) {
@@ -72,13 +72,13 @@ public type Client client object {
         }
     }
 
-    # Retrieves a service desk by the given ID.
+    # Retrieves a Service Desk by the given ID.
     # ```ballerina
     # ServiceDesk|error serviceDesk = serviceDeskClient->getServiceDeskById(1);
     # ```
     #
-    # + serviceDeskId - The ID of the service desk to return
-    # + return - Returns the requested `ServiceDesk` instance as client object or else error
+    # + serviceDeskId - The ID of the Service Desk to return
+    # + return - Returns the requested `ServiceDesk` instance as a client object or else an error
     public remote function getServiceDeskById(int serviceDeskId) returns ServiceDesk|error {
         http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
             + serviceDeskId.toString());
@@ -94,8 +94,8 @@ public type Client client object {
         }
     }
 
-    # Creates a customer that is not associated with a service desk project.
-    # To raise issues in closed service desks, the customer must be added to a
+    # Creates a customer who is not associated with a Service Desk project.
+    # To raise issues in closed Service Desks, the customer must be added to a
     # service desk project using `serviceDesk->addCustomers([<accountId>])`.
     # ```ballerina
     # User|error customer = serviceDeskClient->createCustomer("john@example.com", "John H. Smith");
@@ -103,7 +103,7 @@ public type Client client object {
     #
     # + emailAddress - Customer's email address
     # + displayName - Customer's name to be displayed in the UI
-    # + return - Customer detail record if successful or else error
+    # + return - Customer detail record if successful or else an error
     public remote function createCustomer(string emailAddress, string displayName) returns User|error {
         json request = {
             "email": emailAddress,
@@ -127,7 +127,7 @@ public type Client client object {
     # Organization[]|error organizations = serviceDeskClient->getOrganizations();
     # ```
     #
-    # + return - List of organizations if successful or else error
+    # + return - List of organizations if successful or else an error
     public remote function getOrganizations() returns Organization[]|error {
         http:Response|error response = self.jiraClient->get(ORGANIZATION_PATH);
         if (response is error) {
@@ -148,7 +148,7 @@ public type Client client object {
     # ```
     #
     # + organizationId - The ID of the organization to retrieve
-    # + return - Requested organization if successful or else error
+    # + return - Requested organization if successful or else an error
     public remote function getOrganizationById(int organizationId) returns Organization|error {
         http:Response|error response = self.jiraClient->get(ORGANIZATION_PATH + PATH_SEPARATOR
             + organizationId.toString());
@@ -170,7 +170,7 @@ public type Client client object {
     # ```
     #
     # + name - Name of the organization
-    # + return - Created `Organization` as amclient object if successful or else error
+    # + return - Created `Organization` as a client object if successful or else an error
     public remote function createOrganization(string name) returns Organization|error {
         json request = {
             "name": name
@@ -194,7 +194,7 @@ public type Client client object {
     # ```
     #
     # + organizationId - The ID of the organization to be deleted
-    # + return - () if successful or else error
+    # + return - `()` if successful or else an error
     public remote function deleteOrganization(int organizationId) returns error? {
         http:Response|error response = self.jiraClient->delete(ORGANIZATION_PATH + PATH_SEPARATOR
             + organizationId.toString());
@@ -205,13 +205,13 @@ public type Client client object {
         }
     }
 
-    # Retrieves the customer issue by ID or key.
+    # Retrieves the customer issue by the ID or key.
     # ```ballerina
     # Issue|error issue = serviceDeskClient->getIssueById("SD-1");
     # ```
     #
-    # + issueIdOrKey - The ID or Key of the customer issue to be returned.
-    # + return - The customer `Issue` if successful or else error
+    # + issueIdOrKey - The ID or key of the customer issue to be returned.
+    # + return - The customer `Issue` if successful or else an error
     public remote function getIssueById(int|string issueIdOrKey) returns Issue|error {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
         http:Response|error response = self.jiraClient->get(REQUEST_PATH + PATH_SEPARATOR + id);
@@ -227,13 +227,13 @@ public type Client client object {
         }
     }
 
-    # Subscribes the user to receiving notifications from a customer issue.
+    # Subscribes the user to receive notifications from a customer issue.
     # ```ballerina
     # error? result = serviceDeskClient->subscribe("SD-1");
     # ```
     #
-    # + issueIdOrKey - The ID or key of the customer issue to be subscribed to
-    # + return - () if successful or else error
+    # + issueIdOrKey - The ID or key of the customer issue to be subscribed
+    # + return - `()` if successful or else an error
     public remote function subscribe(int|string issueIdOrKey) returns error? {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
         json request = {};
@@ -246,13 +246,13 @@ public type Client client object {
         }
     }
 
-    # Unsubscribes the user from notifications from a customer issue.
+    # Unsubscribes the user from the notifications of a customer issue.
     # ```ballerina
     # error? result = serviceDeskClient->unsubscribe("SD-1");
     # ```
     #
     # + issueIdOrKey - The ID or key of the customer issue to be unsubscribed from
-    # + return - () if the user was unsubscribed or else error
+    # + return - `()` if the user was unsubscribed or else an error
     public remote function unsubscribe(int|string issueIdOrKey) returns error? {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
         http:Response|error response = self.jiraClient->delete(REQUEST_PATH + PATH_SEPARATOR + id + NOTIFICATION_PATH);
@@ -263,13 +263,13 @@ public type Client client object {
         }
     }
 
-    # Retrieves a list of all the participants on a customer issue.
+    # Retrieves a list of all the participants of a customer issue.
     # ```ballerina
     # User[]|error users = serviceDeskClient->getParticipants("SD-1");
     # ```
     #
-    # + issueIdOrKey - The ID or key of the customer issue to get participants
-    # + return - List of issue's participants if successful or else error
+    # + issueIdOrKey - The ID or key of the customer issue to retrieve its participants
+    # + return - List of participants of the issue if successful or else an error
     public remote function getParticipants(int|string issueIdOrKey) returns User[]|error {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
         http:Response|error response = self.jiraClient->get(REQUEST_PATH + PATH_SEPARATOR + id
@@ -286,13 +286,13 @@ public type Client client object {
         }
     }
 
-    # Retrieves all the SLA records on a customer issue.
+    # Retrieves all the SLA records of a customer issue.
     # ```ballerina
     # SLAInformation[]|error sla = serviceDeskClient->getSlaInformation("SD-1");
     # ```
     #
-    # + issueIdOrKey - The ID or key of the customer issue to get SLA information
-    # + return - SLA information if successful or else error
+    # + issueIdOrKey - The ID or key of the customer issue to retrieve information of its SLA
+    # + return - SLA information if successful or else an error
     public remote function getSlaInformation(int|string issueIdOrKey)
     returns SlaInformation[]|error {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;
@@ -309,7 +309,7 @@ public type Client client object {
         }
     }
 
-    # Creates a public or private (internal) comment on a customer issue.
+    # Creates a public or private (internal) comment of a customer issue.
     # The user recorded as the author of the comment.
     # ```ballerina
     # Comment|error comment = serviceDeskClient->createComment("SD-1", "Resolved");
@@ -318,7 +318,7 @@ public type Client client object {
     # + issueIdOrKey - The ID or key of the customer issue to which the comment will be added
     # + body - Content of the comment
     # + isPublic - Indicates whether the comment is public (true) or private/internal (false)
-    # + return - The `Comment` created if successful or else error
+    # + return - The `Comment` created if successful or else an error
     public remote function createComment(int|string issueIdOrKey, string body,
         public boolean isPublic = false) returns Comment|error {
         json request = {
@@ -340,14 +340,14 @@ public type Client client object {
         }
     }
 
-    # Retrieves all comments on a customer issue.
+    # Retrieves all comments of a customer issue.
     # ```ballerina
     # Comment[]|error comments = serviceDeskClient->getComments("SD-1");
     # ```
     #
-    # + issueIdOrKey - The ID or key of the customer issue whose comments will be retrieved
-    # + publicOn - Whether to return public comments or not, default is true
-    # + return - List of comments if successful or else error
+    # + issueIdOrKey - The ID or key of the customer issue of which the comments will be retrieved
+    # + publicOn - Whether to return public comments or not. The default value is `true`.
+    # + return - List of comments if successful or else an error
     public remote function getComments(string|int issueIdOrKey, public boolean publicOn = true)
     returns Comment[]|error {
         string id = issueIdOrKey is int ? issueIdOrKey.toString() : issueIdOrKey;

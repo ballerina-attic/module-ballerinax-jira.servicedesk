@@ -23,12 +23,12 @@ public type IssueType commons:IssueType;
 public type Configuration commons:Configuration;
 public type BasicAuthConfiguration commons:BasicAuthConfiguration;
 
-# Properties of a service desk instance.
-# // todo: cHANGE THIS TO PROJECT
-# + id - Unique ID of the service desk
-# + projectId - Project ID of the service desk
-# + projectName - Project name of the service desk
-# + projectKey - Project key of the service desk
+# Properties of a Service Desk instance.
+#
+# + id - Unique ID of the Service Desk
+# + projectId - Project ID of the Service Desk
+# + projectName - Project name of the Service Desk
+# + projectKey - Project key of the Service Desk
 public type ServiceDeskProperties record {|
     int id;
     int projectId?;
@@ -36,7 +36,7 @@ public type ServiceDeskProperties record {|
     string projectKey?;
 |};
 
-# Properties of a SLA record on an issue.
+# Properties of a SLA record of an issue.
 #
 # + id - ID of the SLA information record
 # + name - Name of the SLA value
@@ -54,8 +54,8 @@ public type SlaInformation record {
 # + startTime - Start time of the cycle
 # + breachTime - Stop time of the cycle
 # + goalDurationInMillis - SLA goal duration in milliseconds
-# + elapsedTimeInMillis - Elapsed time of cycle in milliseconds
-# + remainingTimeInMillis - Remaining time of cycle in milliseconds
+# + elapsedTimeInMillis - Elapsed time of the cycle in milliseconds
+# + remainingTimeInMillis - Remaining time of the cycle in milliseconds
 # + breached - Whether the cycle breached the SLA goal
 public type SlaCycle record {|
     string startTime;
@@ -66,7 +66,7 @@ public type SlaCycle record {|
     boolean breached;
 |};
 
-# Properties of a queue in a service desk instance.
+# Properties of a queue in a Service Desk instance.
 #
 # + id - ID of the queue
 # + name - Name of the queue
@@ -85,5 +85,3 @@ public type OrganizationProperties record {|
     int id;
     string name;
 |};
-
-

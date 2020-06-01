@@ -41,13 +41,13 @@ public type ServiceDesk client object {
         return self.properties;
     }
 
-    # Retrieves the list of the customers in a service desk.
+    # Retrieves the list of customers in a service desk.
     # ```ballerina
     # User[]|error customers = serviceDesk->getCustomers();
     # ```
     #
     # + searchQuery - The string query used to filter the customer list
-    # + return - The list of `User` records of the customers in the service desk or else error
+    # + return - The list of `User` records of the customers in the Service Desk or else an error
     public remote function getCustomers(string searchQuery = "") returns User[]|error {
         http:Request request = new;
         request.setHeader("X-ExperimentalApi", "opt-in");
@@ -66,13 +66,13 @@ public type ServiceDesk client object {
         }
     }
 
-    # Adds one or more customers to a service desk.
+    # Adds one or more customers to a Service Desk.
     # ```ballerina
     # error? result = serviceDesk->addCustomers(["accountid-123"]);
     # ```
     #
-    # + users - List of user account IDs, to add to the service desk
-    # + return - () if successful or else error
+    # + users - List of user account IDs to add to the Service Desk
+    # + return - `()` if successful or else an error
     public remote function addCustomers(string[] users) returns error? {
         json[] values = <json[]>users;
         json request = {
@@ -92,8 +92,8 @@ public type ServiceDesk client object {
     # error? result = serviceDesk->removeCustomers(["accountid-123"]);
     # ```
     #
-    # + users - List of user account IDs, to remove from the service desk
-    # + return - () if successful or else error
+    # + users - List of user account IDs to remove from the Service Desk
+    # + return - `()` if successful or else an error
     public remote function removeCustomers(string[] users) returns error? {
         json[] values = <json[]>users;
         json request = {
@@ -108,14 +108,14 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves the queues in a service desk.
+    # Retrieves the queues in a Service Desk.
     # ```ballerina
     # Queue[]|error queues = serviceDesk->getQueues();
     # ```
     #
-    # + includeCount - Specifies whether to include each queue's customer
-    #                  issue count in the response - default is false
-    # + return - The list of `Queue` of the service desk if successful or else error
+    # + includeCount - Specifies whether to include the customer
+    #                  issue count of each queue in the response. The default value is `false`.
+    # + return - The list of Queues of the Service Desk if successful or else an error
     public remote function getQueues(boolean includeCount = false) returns Queue[]|error {
         http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
             + self.properties.id.toString() + QUEUE_PATH + INCLUDE_COUNT + includeCount.toString());
@@ -131,15 +131,15 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves a specific queue in a service desk.
+    # Retrieves a specific queue in a Service Desk.
     # ```ballerina
     # Queue|error queue = serviceDesk->getQueueById(1);
     # ```
     #
     # + queueId - ID of the required queue
-    # + includeCount - Specifies whether to include each queue's customer
-    #                  issue count in the response - default is false
-    # + return - The specific `Queue` of the service desk
+    # + includeCount - Specifies whether to include the customer
+    #                  issue count of each queue in the response. The default value is `false`.
+    # + return - The specific `Queue` of the Service Desk
     public remote function getQueueById(int queueId, boolean includeCount = false)
     returns Queue|error {
         string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + QUEUE_PATH
@@ -162,8 +162,8 @@ public type ServiceDesk client object {
     # Issue[]|error issues = serviceDesk->getIssuesInQueue(1);
     # ```
     #
-    # + queueId - The ID of the queue whose customer issues will be returned
-    # + return - Returns the customer issues belonging to the queue or else error
+    # + queueId - The ID of the queue of which the customer issues will be returned
+    # + return - Returns the customer issues belonging to the queue or else an error
     public remote function getIssuesInQueue(int queueId) returns Issue[]|error {
         string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + QUEUE_PATH + PATH_SEPARATOR
             + queueId.toString() + ISSUE_PATH;
@@ -180,14 +180,14 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves all customer issue types from a service desk.
+    # Retrieves all customer issue types of a Service Desk.
     # ```ballerina
     # IssueType[]|error issueTypes = serviceDesk->getIssueTypes();
     # ```
     #
-    # + groupId - Filters results to those in a customer issue type group
+    # + groupId - Filters results of a customer issue type group
     # + searchQuery - The string used to filter the results
-    # + return - The requested customer `IssueType` list or else error
+    # + return - The requested customer `IssueType` list or else an error
     public remote function getIssueTypes(public int groupId = 0,
         public string searchQuery = "") returns IssueType[]|error {
         string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + PATH_SEPARATOR +
@@ -207,13 +207,13 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves a customer issue type from a service desk.
+    # Retrieves a customer issue type of a Service Desk.
     # ```ballerina
     #  IssueType|error issueType = serviceDesk->getIssueTypeById(10002);
     # ```
     #
     # + issueTypeId - The ID of the customer issue type to be returned
-    # + return - The customer `IssueType` or else error
+    # + return - The customer `IssueType` or else an error
     public remote function getIssueTypeById(int issueTypeId) returns IssueType|error {
         http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
             + self.properties.id.toString() + ISSUE_TYPE_PATH + PATH_SEPARATOR + issueTypeId.toString());
@@ -229,12 +229,12 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves organizations associated with a service desk.
+    # Retrieves organizations associated with a Service Desk.
     # ```ballerina
     # Organization[]|error organizations = serviceDesk->getOrganizations();
     # ```
     #
-    # + return - The requested list of `Organization` if successful or else error
+    # + return - The requested list of organizations if successful or else an error
     public remote function getOrganizations() returns Organization[]|error {
         http:Response|error response = self.jiraClient->get(SERVICEDESK_PATH + PATH_SEPARATOR
             + self.properties.id.toString() + ORGANIZATION_PATH);
@@ -250,13 +250,13 @@ public type ServiceDesk client object {
         }
     }
 
-    # Adds an organization to a service desk.
+    # Adds an organization to a Service Desk.
     # ```ballerina
     # error? result = serviceDesk->addOrganization(1);
     # ```
     #
-    # + organizationId - The ID of the Organization to be added
-    # + return - () if successful or else error
+    # + organizationId - The ID of the organization to be added
+    # + return - `()` if successful or else an error
     public remote function addOrganization(int organizationId) returns error? {
         json request = {
             "organizationId": organizationId
@@ -270,13 +270,13 @@ public type ServiceDesk client object {
         }
     }
 
-    # Removes an organization from a service desk.
+    # Removes an organization from a Service Desk.
     # ```ballerina
     # error? result = serviceDesk->removeOrganization(1);
     # ```
     #
-    # + organizationId - The ID of the Organization to be removed
-    # + return - () if successful or else error
+    # + organizationId - The ID of the organization to be removed
+    # + return - `()` if successful or else an error
     public remote function removeOrganization(int organizationId) returns error? {
         json request = {
             "organizationId": organizationId
@@ -290,15 +290,15 @@ public type ServiceDesk client object {
         }
     }
 
-    # Retrieves all customer issues for the user executing the query.
+    # Retrieves all customer issues of the user executing the query.
     # ```ballerina
     # Issue[]|error issues = serviceDesk->getIssues();
     # ```
     #
     # + searchTerm - Search query to filter issues if the search term matches the issue summary
-    # + issueStatus - Filters issues based on values CLOSED, OPEN and ALL
-    # + issueTypeId - Filters issues by issue type
-    # + return - The list of `Issue` if successful or else error
+    # + issueStatus - Filters issues based on the values: CLOSED, OPEN, and ALL
+    # + issueTypeId - Filters issues by the issue type
+    # + return - The list of issues if successful or else an error
     public remote function getIssues(public int issueTypeId = 0, public string searchTerm = "",
         public string issueStatus = "") returns Issue[]|error {
         string path = REQUEST_PATH;
@@ -318,17 +318,16 @@ public type ServiceDesk client object {
         }
     }
 
-    # Creates a customer issue in a service desk.
+    # Creates a customer issue in a Service Desk.
     # ```ballerina
     # Issue|error issueCreated = serviceDesk->createIssue(issue, "I need a new *mouse* for my Mac", ["id-123"]);
     # ```
     #
     # + issue - The issue to be created
     # + description - The description of the issue
-    # + participants - List of customers to participate in the issue, as a list of accountId
-    #                  values
-    # + onBehalfOf - The accountId of the customer that the issue is being raised on behalf of
-    # + return - The `Issue` created if successful or else error
+    # + participants - List of customers to participate in the issue as a list of account ID values
+    # + onBehalfOf - The account ID of the customer whose issue is being raised on behalf of
+    # + return - The `Issue` created if successful or else an error
     public remote function createIssue(Issue issue, string description,
         string[] participants, public string onBehalfOf = "") returns Issue|error {
         json[] values = <json[]>participants;
