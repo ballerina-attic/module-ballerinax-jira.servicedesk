@@ -2,9 +2,9 @@ Connects to Jira Service Desk from Ballerina.
 
 # Module Overview
 
-This module allows you to access the Jira Service Desk's REST API through ballerina. The Jira Service Desk connector
+This module allows you to access the Jira Service Desk's REST API through Ballerina. The Jira Service Desk connector
  can be used to manage your service desks by executing the supported CRUD (create, read, update, delete) operations
- on the issues, projects, customers and organizations.
+ on the issues, projects, customers, and organizations.
 
 ## Compatibility
 
@@ -15,17 +15,17 @@ This module allows you to access the Jira Service Desk's REST API through baller
 
 ## Configurations
 
-Instantiate the connector by giving authentication details and the url of your Jira instance in the Jira client
+Instantiate the connector by giving the authentication details and the URL of your Jira instance in the Jira client
  configuration. 
 
 **Obtaining Tokens**
 
-1. Visit [Atlassian](https://www.atlassian.com/) and create an sign up to create your account.
-2. Generate an API token for Jira using your Atlassian Account: https://id.atlassian.com/manage/api-tokens
+1. Visit [Atlassian](https://www.atlassian.com/) and sign up to create your account.
+2. Generate [an API token](https://id.atlassian.com/manage/api-tokens) for Jira using your Atlassian Account.
 
 
 ```ballerina
-// Create `servicedesk:Client` configuration by reading from config file.
+// Add the content of the below config file to create a `servicedesk:Client` configuration.
 import ballerinax/jira.servicedesk;
 
 servicedesk:BasicAuthConfiguration basicAuth = {
@@ -66,7 +66,7 @@ public function main() {
         USER_ID = userId;
     }
 
-    // Perform `Organization` related actions
+    // Perform the `Organization`-related actions
     servicedesk:Organization organization = checkpanic serviceDeskClient->createOrganization("<ORG_NAME>");
     // Add the created user to the organization
     checkpanic organization->addUsers([USER_ID]);
@@ -76,11 +76,11 @@ public function main() {
     checkpanic organization->removeUsers([USER_ID]);
 
 
-    // Perform `ServiceDesk` related actions
+    // Perform the `ServiceDesk`-related actions
     // Retrieve all the service desks in your Jira instance
     servicedesk:ServiceDesk[] servicedesks = checkpanic serviceDeskClient->getServiceDesks();
 
-    // Retrieve service desks by id
+    // Retrieve the service desks by the ID
     servicedesk:ServiceDesk itHelpDesk = checkpanic serviceDeskClient->getServiceDeskById(1);
     servicedesk:ServiceDesk supportHelpDesk = checkpanic serviceDeskClient->getServiceDeskById(2);
 
@@ -97,7 +97,7 @@ public function main() {
     // Retrieve all the queues in the service desk
     servicedesk:Queue[] queues = checkpanic itHelpDesk->getQueues(true);
     
-    // Retrieve users in the service desk
+    // Retrieve the users in the service desk
     servicedesk:User[] usersInServiceDesk = checkpanic itHelpDesk->getCustomers();
 }
 ```
