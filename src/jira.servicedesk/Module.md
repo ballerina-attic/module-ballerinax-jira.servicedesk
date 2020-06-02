@@ -1,18 +1,10 @@
-[![Build Status](https://travis-ci.com/ballerina-platform/module-ballerinax-jira.servicedesk.svg?branch=master)](https://travis-ci.com/ballerina-platform/module-ballerinax-jira.servicedesk)
-# Ballerina Jira Service Desk Connector
+Connects to Jira Service Desk from Ballerina.
 
-This module allows you to access the Jira Service Desk's REST API through Ballerina. The Jira Service Desk is an ITSM 
-solution by Atlassian. With the Jira Service Desk, you can easily receive, track, manage, and resolve requests from 
-your team’s customers. The Jira Service Desk is built on the Jira platform. Therefore, there are some common terms and concepts that 
-can be found across all of the Atlassian’s Jira products. The Jira Service Desk connector can be used to manage your service desks
-by executing the supported CRUD (create, read, update, delete) operations on the issues, projects, customers, and
- organizations.
+# Module Overview
 
-The following sections provide you details on how to use the Jira Service Desk connector.
-
-- [Compatibility](#compatibility)
-- [Getting Started](#getting-started)
-- [Samples](#samples)
+This module allows you to access the Jira Service Desk's REST API through Ballerina. The Jira Service Desk connector
+ can be used to manage your service desks by executing the supported CRUD (create, read, update, delete) operations
+ on the issues, projects, customers, and organizations.
 
 ## Compatibility
 
@@ -21,31 +13,19 @@ The following sections provide you details on how to use the Jira Service Desk c
 | Ballerina Language                   |            1.2.x            |
 | Jira Service Desk REST API           |            3.6.2            |
 
-## Getting Started
+## Configurations
 
-### Prerequisites
-Download and install [Ballerina](https://ballerinalang.org/downloads/).
-
-### Pull the Module
-Execute the below command to pull the Jira Service Desk module from Ballerina Central:
-```ballerina
-$ ballerina pull ballerinax/jira.servicedesk
-```
-## Sample
-
-Instantiate the connector by giving authentication details and the URL of your Jira instance in the Jira client
+Instantiate the connector by giving the authentication details and the URL of your Jira instance in the Jira client
  configuration. 
 
 **Obtaining Tokens**
 
 1. Visit [Atlassian](https://www.atlassian.com/) and sign up to create your account.
-2. Generate [an API token](https://id.atlassian.com/manage/api-tokens) for Jira using your Atlassian Account: 
+2. Generate [an API token](https://id.atlassian.com/manage/api-tokens) for Jira using your Atlassian Account.
 
-
-**Create the `servicedesk:Client`**
 
 ```ballerina
-// Add the content of the below config file to create a `servicedesk:Client` configuration .
+// Add the content of the below config file to create a `servicedesk:Client` configuration.
 import ballerinax/jira.servicedesk;
 
 servicedesk:BasicAuthConfiguration basicAuth = {
@@ -61,7 +41,7 @@ servicedesk:Configuration jiraConfig = {
 servicedesk:Client servicedeskClient = new (jiraConfig);
 ```
 
-**Perform Jira Service Desk operations**
+## Sample
 
 ```ballerina
 import ballerina/io;
@@ -100,7 +80,7 @@ public function main() {
     // Retrieve all the service desks in your Jira instance
     servicedesk:ServiceDesk[] servicedesks = checkpanic serviceDeskClient->getServiceDesks();
 
-    // Retrieve service desks by the ID
+    // Retrieve the service desks by the ID
     servicedesk:ServiceDesk itHelpDesk = checkpanic serviceDeskClient->getServiceDeskById(1);
     servicedesk:ServiceDesk supportHelpDesk = checkpanic serviceDeskClient->getServiceDeskById(2);
 
@@ -117,7 +97,7 @@ public function main() {
     // Retrieve all the queues in the service desk
     servicedesk:Queue[] queues = checkpanic itHelpDesk->getQueues(true);
     
-    // Retrieve users in the service desk
+    // Retrieve the users in the service desk
     servicedesk:User[] usersInServiceDesk = checkpanic itHelpDesk->getCustomers();
 }
 ```
