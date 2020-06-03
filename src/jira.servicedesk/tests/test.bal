@@ -30,7 +30,7 @@ string USER_ID = system:getEnv("USER_ID") == "" ? config:getAsString("USER_ID") 
     system:getEnv("USER_ID");
 string CUSTOMER_EMAIL = system:getEnv("CUSTOMER_EMAIL") == "" ? config:getAsString("CUSTOMER_EMAIL") :
                                 system:getEnv("CUSTOMER_EMAIL");
-string ORG_NAME = "Test Organization";
+string ORG_NAME = "Ballerina Organization";
 string ORG_NAME_SD = "Service Desk Organization";
 string DELETE_ORG_NAME = "Test Delete Organization";
 string CUSTOMER_NAME = "John H. Smith";
