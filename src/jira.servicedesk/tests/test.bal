@@ -55,7 +55,7 @@ function testGetServiceDesks() {
     if (result is ServiceDesk[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the service desks");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -65,7 +65,7 @@ function testGetServiceDeskById() {
     if (result is ServiceDesk) {
         test:assertEquals(result.getProperties().id, 1, msg = "failed to retrieve the service desk of id 1");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -80,7 +80,7 @@ function testCreateCustomer() {
         test:assertEquals(result?.displayName, CUSTOMER_NAME, msg = "error occurred in customer creation");
         test:assertEquals(result?.emailAddress, CUSTOMER_EMAIL, msg = "error occurred in customer creation");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -90,7 +90,7 @@ function testGetOrganizations() {
     if (result is Organization[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the organizations");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -100,7 +100,7 @@ function testGetOrganizationById() {
     if (organization is Organization) {
         test:assertEquals(organization.getProperties().id, 1, msg = "failed to retrieve the organization");
     } else {
-        test:assertFail(msg = <string>organization.detail()["message"]);
+        test:assertFail(msg = organization.message());
     }
 }
 
@@ -111,7 +111,7 @@ function testCreateOrganization() {
         test:assertEquals(result.getProperties().name.toString(), ORG_NAME.toString(),
             msg = "failed to create the organization");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -121,7 +121,7 @@ function testGetIssueById() {
     if (issue is Issue) {
         test:assertEquals(issue?.key, ISSUE_KEY, msg = "failed to retrieve the issue");
     } else {
-        test:assertFail(msg = <string>issue.detail()["message"]);
+        test:assertFail(msg = issue.message());
     }
 }
 
@@ -133,7 +133,7 @@ function testDeleteOrganization() {
             msg = "failed to create the organization");
         checkpanic sdClient->deleteOrganization(result.getProperties().id);
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -153,7 +153,7 @@ function testGetParticipants() {
     if (result is User[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the participants");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -163,7 +163,7 @@ function testGetSLAInformation() {
     if (result is SlaInformation[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the sla information");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -173,7 +173,7 @@ function testCreateComment() {
     if (result is Comment) {
         test:assertEquals(result?.body, "Still working on it", msg = "failed to create the comment");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -183,7 +183,7 @@ function testGetComments() {
     if (result is Comment[]) {
         test:assertNotEquals(result.length(), 0, msg = "failed to retrieve the comments");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -198,10 +198,10 @@ function testGetCustomers() {
         if (customers is User[]) {
             test:assertNotEquals(customers.length(), 0, msg = "failed to retrieve the customers");
         } else {
-            test:assertFail(msg = <string>customers.detail()["message"]);
+            test:assertFail(msg = customers.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -214,7 +214,7 @@ function testAddCustomers() {
         error? addResult = result->addCustomers([CUSTOMER_ID]);
         test:assertEquals(addResult, (), msg = "failed to add customers");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -229,7 +229,7 @@ function testAddCustomers() {
 //        error? addResult = result->removeCustomers([CUSTOMER_ID]);
 //        test:assertEquals(addResult, (), msg = "failed to remove customers");
 //    } else {
-//        test:assertFail(msg = <string>result.detail()["message"]);
+//        test:assertFail(msg = result.message());
 //    }
 //}
 
@@ -241,10 +241,10 @@ function testGetQueues() {
         if (queues is Queue[]) {
             test:assertNotEquals(queues.length(), 0, msg = "failed to retrieve the queues");
         } else {
-            test:assertFail(msg = <string>queues.detail()["message"]);
+            test:assertFail(msg = queues.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -256,10 +256,10 @@ function testGetQueueById() {
         if (queue is Queue) {
             test:assertEquals(queue.id, 1, msg = "failed to retrieve the queue by id 1");
         } else {
-            test:assertFail(msg = <string>queue.detail()["message"]);
+            test:assertFail(msg = queue.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -271,10 +271,10 @@ function testGetIssuesInQueue() {
         if (issues is Issue[]) {
             test:assertNotEquals(issues.length(), 0, msg = "failed to retrieve the issues in queue");
         } else {
-            test:assertFail(msg = <string>issues.detail()["message"]);
+            test:assertFail(msg = issues.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -286,10 +286,10 @@ function testGetIssueTypes() {
         if (types is IssueType[]) {
             test:assertNotEquals(types.length(), 0, msg = "failed to retrieve the issue types");
         } else {
-            test:assertFail(msg = <string>types.detail()["message"]);
+            test:assertFail(msg = types.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -301,10 +301,10 @@ function testGetIssueTypeById() {
         if (issueType is IssueType) {
             test:assertEquals(issueType?.id, "10003", msg = "failed to retrieve the issue types");
         } else {
-            test:assertFail(msg = <string>issueType.detail()["message"]);
+            test:assertFail(msg = issueType.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -318,10 +318,10 @@ function testGetOrganizationsByServiceDesk() {
         if (organizations is Organization[]) {
             test:assertNotEquals(organizations.length(), 0, msg = "failed to retrieve the organizations");
         } else {
-            test:assertFail(msg = <string>organizations.detail()["message"]);
+            test:assertFail(msg = organizations.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -332,7 +332,7 @@ function testAddOrganizationToServiceDesk() {
         error? addResult = result->addOrganization(1);
         test:assertEquals(addResult, (), msg = "failed to add the organization to service desk");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -345,7 +345,7 @@ function testRemoveOrganizationFromServiceDesk() {
         error? removeResult = result->removeOrganization(1);
         test:assertEquals(removeResult, (), msg = "failed to remove the organization from service desk");
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -357,10 +357,10 @@ function testGetIssuesInServiceDesk() {
         if (issues is Issue[]) {
             test:assertNotEquals(issues.length(), 0, msg = "failed to retrieve the issues");
         } else {
-            test:assertFail(msg = <string>issues.detail()["message"]);
+            test:assertFail(msg = issues.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -378,10 +378,10 @@ function testCreateIssue() {
         if (issueCreated is Issue) {
             test:assertEquals(issueCreated?.summary, issue?.summary, msg = "error in creating the issue");
         } else {
-            test:assertFail(msg = <string>issueCreated.detail()["message"]);
+            test:assertFail(msg = issueCreated.message());
         }
     } else {
-        test:assertFail(msg = <string>result.detail()["message"]);
+        test:assertFail(msg = result.message());
     }
 }
 
@@ -393,7 +393,7 @@ function testAddUsers() {
         error? result = organization->addUsers([USER_ID]);
         test:assertEquals(result, (), msg = "failed to add the user to organization");
     } else {
-        test:assertFail(msg = <string>organization.detail()["message"]);
+        test:assertFail(msg = organization.message());
     }
 }
 
@@ -407,10 +407,10 @@ function testGetUsers() {
         if (users is User[]) {
             test:assertNotEquals(users.length(), 0, msg = "failed to retrieve the users");
         } else {
-            test:assertFail(msg = <string>users.detail()["message"]);
+            test:assertFail(msg = users.message());
         }
     } else {
-        test:assertFail(msg = <string>organization.detail()["message"]);
+        test:assertFail(msg = organization.message());
     }
 }
 
@@ -423,6 +423,6 @@ function testRemoveUsers() {
         error? result = organization->removeUsers([USER_ID]);
         test:assertEquals(result, (), msg = "failed to remove the user from organization");
     } else {
-        test:assertFail(msg = <string>organization.detail()["message"]);
+        test:assertFail(msg = organization.message());
     }
 }
