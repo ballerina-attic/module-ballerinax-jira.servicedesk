@@ -10,7 +10,7 @@ This module allows you to access the Jira Service Desk's REST API through Baller
 
 |                                      |           Version           |
 |:------------------------------------:|:---------------------------:|
-| Ballerina Language                   |            1.2.x            |
+| Ballerina Language                   |     Swan Lake Preview1      |
 | Jira Service Desk REST API           |            3.6.2            |
 
 ## Configurations

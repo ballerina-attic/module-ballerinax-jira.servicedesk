@@ -18,7 +18,7 @@ The following sections provide you details on how to use the Jira Service Desk c
 
 |                                      |           Version           |
 |:------------------------------------:|:---------------------------:|
-| Ballerina Language                   |            1.2.x            |
+| Ballerina Language                   |     Swan Lake Preview1      |
 | Jira Service Desk REST API           |            3.6.2            |
 
 ## Getting Started
