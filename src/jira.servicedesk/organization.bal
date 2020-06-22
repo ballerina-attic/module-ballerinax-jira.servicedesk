@@ -26,7 +26,7 @@ public type Organization client object {
     #
     # + jiraClient - The `http:Client` object
     # + properties - Properties of the organization
-    public function __init(http:Client jiraClient, OrganizationProperties properties) {
+    public function init(http:Client jiraClient, OrganizationProperties properties) {
         self.properties = properties;
         self.jiraClient = jiraClient;
     }

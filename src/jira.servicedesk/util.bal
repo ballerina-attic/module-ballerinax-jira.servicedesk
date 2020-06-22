@@ -43,7 +43,7 @@ function validateResponseCode(http:Response response) returns error? {
 
 // Creates an error
 function createError(string reason, string message) returns error {
-    return error(reason, message = message);
+    return error(reason + ": " + message);
 }
 
 // Creates the path with the given query params

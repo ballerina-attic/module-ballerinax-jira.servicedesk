@@ -26,7 +26,7 @@ public type ServiceDesk client object {
     #
     # + jiraClient - The `http:Client` object
     # + properties - Properties of the Service Desk
-    public function __init(http:Client jiraClient, ServiceDeskProperties properties) {
+    public function init(http:Client jiraClient, ServiceDeskProperties properties) {
         self.jiraClient = jiraClient;
         self.properties = properties;
     }
@@ -52,7 +52,10 @@ public type ServiceDesk client object {
         http:Request request = new;
         request.setHeader("X-ExperimentalApi", "opt-in");
         string path = SERVICEDESK_PATH + PATH_SEPARATOR + self.properties.id.toString() + CUSTOMER_PATH;
-        path = searchQuery != "" ? path + QUEUE_PATH + searchQuery : path;
+        string queryPath = path + QUEUE_PATH + searchQuery;
+        if (searchQuery != "") {
+            path = queryPath;
+        }
         http:Response|error response = self.jiraClient->get(path, request);
         if (response is error) {
             return response;

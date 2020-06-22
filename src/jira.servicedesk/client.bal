@@ -25,7 +25,7 @@ public type Client client object {
     # Initializes the Jira client endpoint.
     #
     # + jiraConfig - Jira client configuration record
-    public function __init(Configuration jiraConfig) {
+    public function init(Configuration jiraConfig) {
         string baseUrl = jiraConfig.baseUrl + API_PATH;
         http:ClientConfiguration clientConfig;
         BasicAuthConfiguration|oauth2:DirectTokenConfig authConfig = jiraConfig.authConfig;
